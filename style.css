@@ -74,7 +74,8 @@ h2 { font-family: Georgia, serif; font-size: 30px; margin: 0; }
 .hints li b { color: var(--accent); font-weight: 600; margin-right: 6px; }
 .wrong { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
 .wrong span { background: rgba(229,83,75,.15); color: #ff9a93; border-radius: 999px; padding: 4px 10px; font-size: 13px; text-decoration: line-through; }
-.attempts { display: flex; gap: 6px; justify-content: center; margin: 12px 0 8px; }
+.attempts { display: flex; gap: 6px; justify-content: center; align-items: center; margin: 12px 0 8px; }
+.attempts .lbl { font-size: 12px; color: var(--muted); margin: 0 4px; }
 .attempts i { width: 28px; height: 6px; border-radius: 3px; background: var(--accent); }
 .attempts i.used { background: #3a4b6a; }
 

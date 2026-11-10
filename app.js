@@ -104,7 +104,10 @@
   }
   function renderAttempts() {
     const used = game.cur.tries;
-    $("attempts").innerHTML = Array.from({ length: TRIES }, (_, i) => `<i class="${i < used ? "used" : ""}"></i>`).join("");
+    const left = TRIES - used;
+    $("attempts").innerHTML = `<span class="lbl">💡 Hints</span>` +
+      Array.from({ length: HINTS_PER_GAME }, (_, i) => `<i class="${i < game.hintsLeft ? "" : "used"}"></i>`).join("") +
+      `<span class="lbl">· ${left} ${left === 1 ? "guess" : "guesses"} left</span>`;
     renderHintBtn();
   }
   function renderHintBtn() {
@@ -191,7 +194,7 @@
   $("guess-form").addEventListener("submit", (e) => { e.preventDefault(); submitGuess($("guess").value); });
   $("btn-hint").addEventListener("click", () => {
     const c = game.cur; if (c.done || game.hintsLeft <= 0 || c.hints >= 3) return;
-    game.hintsLeft--; c.hints++; revealHint(); renderHintBtn();
+    game.hintsLeft--; c.hints++; revealHint(); renderAttempts();
   });
   $("btn-skip").addEventListener("click", () => { if (!game.cur.done) { game.cur.tries = TRIES; renderAttempts(); endRound(false); } });
   $("btn-next").addEventListener("click", next);

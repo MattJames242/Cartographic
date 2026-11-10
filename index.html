@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <title>Cartographic</title>
+  <meta name="description" content="Guess the historical figure from where and when they were born and died.">
+  <meta name="theme-color" content="#16233a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cartographic">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Home -->
+  <section id="home" class="screen active">
+    <div class="home-inner">
+      <div class="logo">🗺️</div>
+      <h1>Cartographic</h1>
+      <p class="tagline">Born here. Died there. Who were they?</p>
+      <button class="btn primary" id="btn-classic">Play classic <small>10 rounds</small></button>
+      <button class="btn" id="btn-daily">Daily challenge <small id="daily-status"></small></button>
+      <div class="stats" id="home-stats"></div>
+      <details class="howto">
+        <summary>How to play</summary>
+        <p>The map shows where a famous person was <b class="g">born</b> and where they <b class="r">died</b>, with the years.</p>
+        <p>Type your guess. You get 4 tries. Each wrong guess (or hint) reveals a clue:</p>
+        <ol><li>Place names</li><li>Who they were</li><li>Their initials</li></ol>
+        <p>Points per round: 4 → 3 → 2 → 1.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="screen">
+    <div id="map"></div>
+    <header class="topbar">
+      <button class="icon-btn" id="btn-quit" aria-label="Quit">✕</button>
+      <div class="progress"><span id="round-label">1 / 10</span></div>
+      <div class="score-pill">⭐ <span id="score">0</span></div>
+    </header>
+
+    <div class="sheet" id="sheet">
+      <div class="years">
+        <div class="yr born"><span class="dot"></span><span class="lbl">Born</span><span id="birth-year" class="val"></span></div>
+        <div class="arrow">→</div>
+        <div class="yr died"><span class="dot"></span><span class="lbl">Died</span><span id="death-year" class="val"></span></div>
+      </div>
+      <ul class="hints" id="hints"></ul>
+      <div class="wrong" id="wrong"></div>
+
+      <div id="guess-area">
+        <div class="attempts" id="attempts"></div>
+        <form id="guess-form" autocomplete="off">
+          <div class="input-wrap">
+            <input id="guess" type="text" placeholder="Who is it?" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
+            <ul id="suggest" class="suggest"></ul>
+          </div>
+          <button class="btn primary small" type="submit">Guess</button>
+        </form>
+        <div class="row">
+          <button class="btn ghost small" id="btn-hint" type="button">💡 Hint</button>
+          <button class="btn ghost small" id="btn-skip" type="button">Give up</button>
+        </div>
+      </div>
+
+      <div id="reveal" class="reveal hidden">
+        <div class="reveal-title" id="reveal-title"></div>
+        <div class="reveal-name" id="reveal-name"></div>
+        <div class="reveal-desc" id="reveal-desc"></div>
+        <div class="reveal-places" id="reveal-places"></div>
+        <button class="btn primary" id="btn-next">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="results" class="screen">
+    <div class="home-inner">
+      <h2 id="res-title">Game over</h2>
+      <div class="big-score"><span id="res-score">0</span><small> / <span id="res-max">40</span></small></div>
+      <div class="grid" id="res-grid"></div>
+      <p id="res-best" class="muted"></p>
+      <ul class="res-list" id="res-list"></ul>
+      <button class="btn primary" id="btn-share">Share result</button>
+      <button class="btn" id="btn-again">Play again</button>
+      <button class="btn ghost" id="btn-home">Home</button>
+    </div>
+  </section>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

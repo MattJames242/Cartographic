@@ -1,0 +1,16 @@
+{
+  "name": "Cartographic – Who Was It?",
+  "short_name": "Cartographic",
+  "description": "Guess the historical figure from where and when they were born and died.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1a2c",
+  "theme_color": "#16233a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

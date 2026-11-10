@@ -83,11 +83,6 @@ h2 { font-family: Georgia, serif; font-size: 30px; margin: 0; }
 #guess { width: 100%; font-size: 17px; padding: 12px 14px; border-radius: 12px; border: 1px solid #34486e;
   background: #0f1a2c; color: var(--text); outline: none; }
 #guess:focus { border-color: var(--accent); }
-.suggest { position: absolute; left: 0; right: 0; bottom: calc(100% + 6px); list-style: none; margin: 0; padding: 4px;
-  background: #0f1a2c; border: 1px solid #34486e; border-radius: 12px; max-height: 200px; overflow-y: auto; display: none; }
-.suggest.show { display: block; }
-.suggest li { padding: 10px 10px; border-radius: 8px; cursor: pointer; }
-.suggest li:active, .suggest li.active { background: var(--panel-2); }
 .row { display: flex; justify-content: space-between; margin-top: 4px; }
 
 .reveal { text-align: center; padding-top: 10px; animation: pop .3s ease; }

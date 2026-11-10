@@ -5,9 +5,9 @@
 A mobile game. A map shows where a famous historical figure was **born** (green) and where they **died** (red), with the years. Work out who it is.
 
 ## How to play
-- You get **4 tries** per round. Suggestions appear as you type.
-- Each wrong guess, or tapping **Hint**, reveals another clue: 1) the place names, 2) who they were, 3) their initials.
-- Points per round: 4 → 3 → 2 → 1. A game has 10 rounds, so the top score is 40.
+- You get **4 tries** per round. There are no suggested answers, so you have to type the name yourself. Close spellings are accepted.
+- You get **3 hints for the whole game** (10 rounds). Each hint on a person reveals their next clue: 1) the place names, 2) who they were, 3) their initials.
+- Points per round: 4 → 3 → 2 → 1 depending on how many tries you used. A game has 10 rounds, so the top score is 40.
 - **Daily challenge**: everyone gets the same 10 figures each day. You can share your result as an emoji grid.
 
 ## Install it on your phone

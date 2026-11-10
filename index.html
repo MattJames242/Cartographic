@@ -29,9 +29,9 @@
       <details class="howto">
         <summary>How to play</summary>
         <p>The map shows where a famous person was <b class="g">born</b> and where they <b class="r">died</b>, with the years.</p>
-        <p>Type your guess. You get 4 tries. Each wrong guess (or hint) reveals a clue:</p>
+        <p>Type your guess. You get 4 tries per person. Points: 4 → 3 → 2 → 1.</p>
+        <p>You only have <b>3 hints for the whole game</b>, so use them wisely. Each hint on a person reveals the next clue:</p>
         <ol><li>Place names</li><li>Who they were</li><li>Their initials</li></ol>
-        <p>Points per round: 4 → 3 → 2 → 1.</p>
       </details>
     </div>
   </section>
@@ -59,7 +59,6 @@
         <form id="guess-form" autocomplete="off">
           <div class="input-wrap">
             <input id="guess" type="text" placeholder="Who is it?" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
-            <ul id="suggest" class="suggest"></ul>
           </div>
           <button class="btn primary small" type="submit">Guess</button>
         </form>

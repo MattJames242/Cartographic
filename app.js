@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const ROUNDS = 10, TRIES = 4;
+  const ROUNDS = 10, TRIES = 4, HINTS_PER_GAME = 3;
   const $ = (id) => document.getElementById(id);
   const store = {
     get(k, d) { try { const v = localStorage.getItem("carto:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -81,7 +81,7 @@
   function newGame(mode) {
     const daily = mode === "daily";
     const pool = daily ? shuffle(FIGURES, rng(hashStr("carto" + todayKey()))) : shuffle(avoidRecent(FIGURES));
-    game = { mode, figures: pool.slice(0, ROUNDS), round: 0, score: 0, results: [] };
+    game = { mode, figures: pool.slice(0, ROUNDS), round: 0, score: 0, results: [], hintsLeft: HINTS_PER_GAME };
     if (!daily) store.set("recent", [...game.figures.map((f) => f.n), ...store.get("recent", [])].slice(0, 60));
     show("game");
     startRound();
@@ -97,7 +97,7 @@
     $("birth-year").textContent = fmtYear(f.b[0], f.b[4]);
     $("death-year").textContent = fmtYear(f.x[0], f.x[4]);
     $("hints").innerHTML = ""; $("wrong").innerHTML = "";
-    $("guess").value = ""; hideSuggest();
+    $("guess").value = "";
     $("guess-area").classList.remove("hidden"); $("reveal").classList.add("hidden");
     renderAttempts();
     requestAnimationFrame(() => drawFigure(f));
@@ -105,10 +105,15 @@
   function renderAttempts() {
     const used = game.cur.tries;
     $("attempts").innerHTML = Array.from({ length: TRIES }, (_, i) => `<i class="${i < used ? "used" : ""}"></i>`).join("");
-    $("btn-hint").disabled = used >= TRIES - 1;
+    renderHintBtn();
+  }
+  function renderHintBtn() {
+    const c = game.cur, b = $("btn-hint");
+    b.textContent = `💡 Hint (${game.hintsLeft} left)`;
+    b.disabled = c.done || game.hintsLeft <= 0 || c.hints >= 3;
   }
   function revealHint() {
-    const c = game.cur, f = c.f, n = c.tries; // n = number of tries used so far
+    const c = game.cur, f = c.f, n = c.hints; // n = hints used this round
     const li = document.createElement("li");
     if (n === 1) { li.innerHTML = `<b>Places</b>${esc(f.b[1])} → ${esc(f.x[1])}`; showLabels(); }
     else if (n === 2) li.innerHTML = `<b>Who</b>${esc(f.d)}`;
@@ -124,12 +129,10 @@
     if (wrongGuess) { c.wrong.push(wrongGuess); const s = document.createElement("span"); s.textContent = wrongGuess; $("wrong").appendChild(s); }
     renderAttempts();
     if (c.tries >= TRIES) return endRound(false);
-    revealHint();
   }
   function submitGuess(text) {
     const c = game.cur; if (c.done) return;
     text = text.trim(); if (!text) return;
-    hideSuggest();
     if (isMatch(text, c.f)) return endRound(true);
     if (c.wrong.some((w) => norm(w) === norm(text))) { toast("Already tried that"); return; }
     $("sheet").classList.remove("shake"); void $("sheet").offsetWidth; $("sheet").classList.add("shake");
@@ -138,7 +141,7 @@
     useTry(text);
   }
   function endRound(win) {
-    const c = game.cur; c.done = true;
+    const c = game.cur; c.done = true; renderHintBtn();
     const pts = win ? TRIES - c.tries : 0;
     game.score += pts;
     game.results.push({ name: c.f.n, pts, win });
@@ -184,36 +187,12 @@
     renderResults.share = `🗺️ Cartographic${mode === "daily" ? " Daily " + todayKey() : ""}\n${results.map(emoji).join("")}\n${score}/${max}`;
   }
 
-  // ---------- autocomplete ----------
-  const allNames = FIGURES.map((f) => f.n).sort();
-  let activeIdx = -1;
-  function updateSuggest() {
-    const q = norm($("guess").value);
-    const ul = $("suggest");
-    if (q.length < 2) return hideSuggest();
-    const hits = allNames.filter((n) => norm(n).split(" ").some((w) => w.startsWith(q)) || norm(n).startsWith(q)).slice(0, 6);
-    if (!hits.length) return hideSuggest();
-    activeIdx = -1;
-    ul.innerHTML = hits.map((n) => `<li>${esc(n)}</li>`).join("");
-    ul.classList.add("show");
-  }
-  function hideSuggest() { $("suggest").classList.remove("show"); activeIdx = -1; }
-  $("guess").addEventListener("input", updateSuggest);
-  $("guess").addEventListener("keydown", (e) => {
-    const items = [...$("suggest").querySelectorAll("li")];
-    if (!items.length || !$("suggest").classList.contains("show")) return;
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault();
-      activeIdx = (activeIdx + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
-      items.forEach((li, i) => li.classList.toggle("active", i === activeIdx));
-    } else if (e.key === "Enter" && activeIdx >= 0) { e.preventDefault(); submitGuess(items[activeIdx].textContent); }
-    else if (e.key === "Escape") hideSuggest();
-  });
-  $("suggest").addEventListener("pointerdown", (e) => { const li = e.target.closest("li"); if (li) { e.preventDefault(); submitGuess(li.textContent); } });
-
   // ---------- wiring ----------
   $("guess-form").addEventListener("submit", (e) => { e.preventDefault(); submitGuess($("guess").value); });
-  $("btn-hint").addEventListener("click", () => { if (!game.cur.done && game.cur.tries < TRIES - 1) useTry(null); });
+  $("btn-hint").addEventListener("click", () => {
+    const c = game.cur; if (c.done || game.hintsLeft <= 0 || c.hints >= 3) return;
+    game.hintsLeft--; c.hints++; revealHint(); renderHintBtn();
+  });
   $("btn-skip").addEventListener("click", () => { if (!game.cur.done) { game.cur.tries = TRIES; renderAttempts(); endRound(false); } });
   $("btn-next").addEventListener("click", next);
   $("btn-quit").addEventListener("click", () => { if (confirm("Quit this game?")) { renderHome(); show("home"); } });

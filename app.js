@@ -219,5 +219,12 @@
   }
   renderHome();
 
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  if ("serviceWorker" in navigator) {
+    const hadController = !!navigator.serviceWorker.controller;
+    // When an updated service worker takes over, reload once so the new version shows straight away.
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hadController && !game && !window.__reloaded) { window.__reloaded = true; location.reload(); }
+    });
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => r.update()).catch(() => {}));
+  }
 })();

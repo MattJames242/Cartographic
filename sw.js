@@ -1,4 +1,4 @@
-const CACHE = "cartographic-v3";
+const CACHE = "cartographic-v4";
 const SHELL = ["./", "index.html", "style.css", "app.js", "data.js", "manifest.json", "icons/icon-192.png", "icons/icon-512.png",
   "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css", "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
@@ -13,6 +13,8 @@ self.addEventListener("fetch", (e) => {
     return;
   }
   // Network-first for app files so updates arrive; fall back to cache offline.
-  e.respondWith(fetch(e.request).then((r) => { const copy = r.clone(); if (r.ok) caches.open(CACHE).then((c) => c.put(e.request, copy)); return r; })
-    .catch(() => caches.match(e.request)));
+  // "no-cache" makes the browser revalidate with the server instead of reusing a stale HTTP-cached copy.
+  const req = url.origin === self.location.origin ? new Request(e.request, { cache: "no-cache" }) : e.request;
+  e.respondWith(fetch(req).then((r) => { const copy = r.clone(); if (r.ok) caches.open(CACHE).then((c) => c.put(e.request, copy)); return r; })
+    .catch(() => caches.match(e.request, { ignoreSearch: true })));
 });

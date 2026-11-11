@@ -29,6 +29,7 @@ h1 { font-family: Georgia, "Times New Roman", serif; font-size: 40px; margin: 0;
 h2 { font-family: Georgia, serif; font-size: 30px; margin: 0; }
 .tagline { color: var(--muted); margin: 0 0 18px; }
 .muted { color: var(--muted); }
+.version { font-size: 12px; margin-top: 12px; }
 
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; flex-direction: column;
   border: 1px solid #2f4266; background: var(--panel-2); border-radius: 14px; padding: 14px 18px;
